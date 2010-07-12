@@ -1,0 +1,80 @@
+Formby is a library based on Erector, for the creation and parsing of
+HTML forms.  Each Formby widget is responsible for one or more HTML
+form elements, and/or acts as a container for other Formby widgets.
+
+== Why?
+
+=== "It's a thing, not just a string"
+
+The principle value-add of Formby, as opposed to outputting HTML
+directly (whether through Erector or some other markup language) is
+that we explicitly specify the conversion between the string
+parameters our app receives (in query strings or HTTP request bodies)
+and the actual Ruby value of the widget(s) responsible for them.  And
+likewise in the other direction, between the widget value and the
+stringised HTML we generate.  Formby::Widget#value always refers to
+the in-memory value, which can be set programmatically, or translated 
+from form input parameters.
+
+That sounds a bit abstract.  Why does it matter?  Well, how often have
+you written code to test if the user supplied a value for the
++postcode+ field and forgotten until you tested it that an empty
+string tests +true+ in Ruby?  Or wasted an hour tracking a bug because
+you forgot that +params['age']+ is +"34"+ (not just +34+) but all your
+existing code happens to work anyway because up to now you'd only been
+storing the values in a database which was converting types back to
+what you expected automagically?  Perhaps this level of stupidity is
+atypical and it's just me really, but you might still win from having
+a clean way to combine multiple input fields into a single value -
+e.g. for date/time entry, or UK bank sort codes.
+
+Even if that still doesn't sound useful, you might benefit from Formby
+just as a bunch of widgets that generate HTML form elements and
+uniformly (or fairly uniformly: see Formby::Button for what we do
+about the _truly_ idiotic parameter names) accept the usual
+parameters.
+
+== Builtin widgets
+
+Most of the widgets in the Formby namespace correspond one-for-one
+with HTML form elements, and are named either for the HTML element
+(e.g. Formby::Textarea generates a +textarea+) or for the type of
++input+ element - so, Formby::Hidden makes a +&gt;input type="hidden"&lt;+.
+They all accept +:name+, +:id+, +:value+, +:class+, +:style+ and other
+useful attributes.
+
+The current incarnation of Formby is a spinoff of a non-open-source
+project at $WORK, and widgets have been developed essentially as I had
+a need for them - if you're missing something you need, feel free to
+subclass Formby::Input, hack it in and send me patches (or in this
+brave new git world, pull requests).  
+
+(Current incarnation?  I've previously implemented the same design
+pattern in Lisp and before that in Perl.  So, in the spirit of Rolf
+Harris, I have a fairly good idea how this will end up looking even if
+it's not obvious to the onlooker what it is yet)
+
+== JQuery
+
+JQuery, in my own personal very biased opinion, is one genius idea on
+which a whole ecosystem of crud has been built (in that respect, it's
+a lot like Javascript itself).  But that's not sufficient reason for
+me not to use it, and if you want to attach javascript event handlers
+to Formby widgets you'll probably want to use it or something like it
+too.  Because I haven't bothered adding support for all the possible
++:onchange+, +:onmouseup+, +:ondblclick+, +:ondocumentalmostloaded+,
++:ontheshouldersofgiants+ etc attributes that you might otherwise need.
+
+== Widget taxonomy
+
+Widgets can be categorised in a couple of ways
+* 'simple' vs 'composite': a simple widget corresponds to a single HTML input element, a composite widget has several elements
+* 'leaf' vs 'container': a leaf widget's value is a single Ruby object; a container widget value is a hash table whose elements are the contained widgets values
+ 
+A widget may be both composite and leaf: for example, a date/time
+widget with multiple input fields that combine into a single Ruby Time
+object.
+
+For more reading, consult the rdoc: suggested starting points are
+link:classes/Formby/Base.html Formby::Base and Formby::Inline
+
