@@ -40,10 +40,10 @@ module Formby
     # transform its associated form data into a Ruby Time object).
     #
     # Subclass writers should note that deserialisation rules are
-    # implemented in #from_form (which you should override when
-    # writing a new widget if you don't want the default behaviour)
-    # and serialisation is accomplished in #content (which you will
-    # need to implement anyway)
+    # implemented in #from_request_params (which you should override
+    # when writing a new widget if you don't want the default
+    # behaviour) and serialisation is accomplished in #content (which
+    # you will need to implement anyway)
 
     attr_accessor :value
 
@@ -51,15 +51,9 @@ module Formby
     # GET/POST data.  
     #
     # +hash+ is request data as returned by Rack::Response#params
-    #
-    # +prefix+ is used for recursive calls to child widgets.  As a
-    # user of the library you can leave this nil.  If you are
-    # implementing a widget, prefix this to your widget names when
-    # looking for your fields in +hash+ - see Formby::Input#from_form
-    # for example
 
-    def from_form(hash,prefix=nil)
-      raise NoMethodError.new("no such method",:from_form)
+    def from_request_params(hash)
+      value_from_hash(hash,nil)
     end
 
     # Erector calls this to output your widget
@@ -89,6 +83,7 @@ module Formby
     end        
   end
 
+
   # Simple widgets may (usually do) inherit from Formby::Input 
 
   class Input < Base
@@ -105,7 +100,7 @@ module Formby
       string and string.strip
     end
 
-    def from_form(hash,prefix=nil)
+    def value_from_hash(hash,prefix)
       name=self.name.to_s
       if prefix then name = prefix+"/"+name end
       self.value=self.parse_value(hash[name])
@@ -116,24 +111,37 @@ module Formby
 
   class Container < Base
     attr_accessor :children
-    needs :children
+    needs :children,:params=>nil
+    def initialize(*args)
+      super
+      @params and self.from_request_params(@params) 
+    end
     def child(name) 
       @children.find do |c|
         c.name == name
       end
     end
-    def from_form(hash,prefix=nil)
-      if self.name then
-        prefix=prefix ? (prefix+"/"+self.name.to_s) : (self.name.to_s)
-      end
-      @children.each { |c| 
-        c.from_form(hash,prefix) 
-      }
-    end
     def value
       v={}
       @children.each { |c| v[c.name]=c.value }
       v
+    end
+
+    # private
+
+    # This is called by from_request_params or by itself recursively.
+    # +prefix+ is used for recursive calls to child widgets.  If you are
+    # implementing a widget, prefix this to your widget names when
+    # looking for your fields in +hash+ - see Formby::Input#value_from_hash
+    # for example
+
+    def value_from_hash(hash,prefix)
+      if self.name then
+        prefix=prefix ? (prefix+"/"+self.name.to_s) : (self.name.to_s)
+      end
+      @children.each { |c| 
+        c.value_from_hash(hash,prefix) 
+      }
     end
   end
 
