@@ -1,0 +1,21 @@
+This filecontains chronological musings about design direction and
+notes to myself.  It may contain the rationale for otherwise
+undocumented design decisions, blind alleys, random ruminations, TODO
+(and "to do later") items, and - from time to time - shopping lists.
+Don't take it too seriously
+
+
+Mon Jul 12 18:59:21 2010
+
+This is the first version that is standalone from rticulate.  Noted so far
+
+1) erector 0.8 doesn't seem to work on my machine: to_html instead of
+returning a string of html returns what looks like the output of to_s
+on an array of html fragment strings.
+
+2) instead of having a public from_form method on every widget, should
+we make it an argument to Widget::Form and spread the data around
+using undocumented methods?  TBH Widget::Container is probably just as
+good a place.  Perhaps we should pass :params to the constructor instead of
+an argument to initialize, though, 
+
