@@ -127,8 +127,6 @@ module Formby
       v
     end
 
-    # private
-
     # This is called by from_request_params or by itself recursively.
     # +prefix+ is used for recursive calls to child widgets.  If you are
     # implementing a widget, prefix this to your widget names when
