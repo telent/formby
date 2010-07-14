@@ -68,10 +68,11 @@ describe Formby do
     w.to_html.should include %Q[input name="ctr/text" type="text"]
     w.to_html.should include %Q[inlineFieldLabel({label:'search behind sofa'})]
 
-    # this gives me the creeps.  +page+ has no reference at all to 
-    # tx or any other widget with external deps, so how does it know
-    # to output them?  I'll be happy when this test starts failing
-    page=Erector::Widgets::Page.new
+    page=Erector::Widgets::Page.new(:w=>w)
+    def page.body_content
+      h1 "a headline"
+      widget @w
+    end
     page.to_html.should include %Q[inlineFieldLabel.js]
 
   end

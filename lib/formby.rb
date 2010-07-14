@@ -155,8 +155,8 @@ module Formby
   # a better and more elegant replacement would be welcome
   # 
   class Text < Input
-    external :js,jquery_location
-    external :js,jquery_location("jquery.inlineFieldLabel.js")
+    depends_on :js,jquery_location
+    depends_on :js,jquery_location("jquery.inlineFieldLabel.js")
     needs :inlinelabel=>nil
     def type ; :text ;end
     def content
