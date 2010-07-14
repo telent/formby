@@ -149,6 +149,10 @@ module Formby
     end
   end
 
+  class Form < Container
+  end 
+      
+
   # Formby::Text in addition to the usual options accepts :inlinelabel
   # to provide placeholder text which is displayed inside the input
   # element when nothing has been typed by the user.
