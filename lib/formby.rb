@@ -1,16 +1,19 @@
 require 'erector'
 
-# in erector 0.7.2 to_html is not defined, but in 0.8 to_s is
-# deprecated in its favour.  And doesn't work properly with ruby 1.9
-# because of the changed behaviour of Array#to_s
+# Erector 0.8.0 doesn't work properly with ruby 1.9 because of the
+# changed behaviour of Array#to_s.  This is a very temporary fix
 
-if Erector::Widget.new.respond_to?(:to_html)
-  class Erector::Output
-    def to_s ;  Erector::RawString.new(buffer.join "") ;end
-  end
-else
-  class Erector::Widget
-    def to_html;  to_s;  end
+class Erector::Output
+  def to_s ;  Erector::RawString.new(buffer.join "") ;end
+end
+# similarly, it uses uniq in a place where uniq doesn't work
+
+class ExternalRenderer
+  def rendered_externals(type)
+    dep=@classes.map do |klass|
+      klass.dependencies(type)
+    end.flatten
+    Hash[dep.map{|x| [[x.text,x.options],x]}].values
   end
 end
 
