@@ -100,9 +100,12 @@ module Formby
     end
 
     def parse_value(string)
-      string and string.strip
+      if string then
+        string=string.strip
+        if string.empty?  then nil else string end
+      end
     end
-
+    
     def value_from_hash(hash,prefix)
       name=self.name.to_s
       if prefix then name = prefix+"/"+name end
