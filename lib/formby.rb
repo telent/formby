@@ -70,7 +70,7 @@ module Formby
       parents=[]
       p=self
       while p
-        if p.name then parents.unshift p.name end
+        if (p.respond_to?(:name) and p.name) then parents.unshift p.name end
         p=p.parent
       end
       parents.join("/")
