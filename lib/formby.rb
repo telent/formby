@@ -6,8 +6,8 @@ require 'erector'
 class Erector::Output
   def to_s ;  Erector::RawString.new(buffer.join "") ;end
 end
-# similarly, it uses uniq in a place where uniq doesn't work
 
+# similarly, it uses uniq in a place where uniq doesn't work
 class ExternalRenderer
   def rendered_externals(type)
     dep=@classes.map do |klass|
@@ -209,6 +209,7 @@ module Formby
   # specifying the valid options
   class Dropdown < Formby::Input
     needs :options
+    def type ; :nil; end
     def content
       select self.standard_attributes.merge(:value=>nil) do
         @options.each do |k,v|

@@ -95,6 +95,13 @@ describe Formby do
     s.should include %Q[name=\"story\"]
     s.should include %Q[Once upon a time]
   end
+  it "Formby::Dropdown works" do
+    options={23=>"hello", 46=>"hoogbye"}
+    s=Formby::Dropdown.new(:name=>:choices,:value=>46,:options=>options).to_html
+    out=s.split(/>/)
+    out.find {|c| /46/.match(c) }.should include("selected")
+    out.find {|c| /23/.match(c) }.should_not include("selected")
+  end
   # XXX need to test widgets with names/other attributes that confuse 
   # javascript quoting
 
