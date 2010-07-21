@@ -90,10 +90,10 @@ module Formby
   # Simple widgets may (usually do) inherit from Formby::Input 
 
   class Input < Base
-    needs :id=>nil,:value=>nil,:style=>nil
+    needs :id=>nil,:value=>nil,:style=>nil,:readonly=>false
 
     def standard_attributes
-      {  :name=>self.fullname, :id=>(@id and @id.to_s),:value=>@value, :type=>self.type, :style=>@style }
+      {  :name=>self.fullname, :id=>(@id and @id.to_s),:value=>@value, :type=>self.type, :style=>@style, :readonly=>@readonly }
     end
     def content
       input self.standard_attributes
