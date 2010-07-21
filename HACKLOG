@@ -1,4 +1,4 @@
-This filecontains chronological musings about design direction and
+This file contains chronological musings about design direction and
 notes to myself.  It may contain the rationale for otherwise
 undocumented design decisions, blind alleys, random ruminations, TODO
 (and "to do later") items, and - from time to time - shopping lists.
@@ -18,4 +18,10 @@ we make it an argument to Widget::Form and spread the data around
 using undocumented methods?  TBH Widget::Container is probably just as
 good a place.  Perhaps we should pass :params to the constructor instead of
 an argument to initialize, though, 
+
+Wed Jul 21 15:38:36 2010
+
+I think Widget::Container might work well as an inline widget/wiget
+that accepts a block for #new.  This would make it simpler to write
+arbitrary containers.
 
