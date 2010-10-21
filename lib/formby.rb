@@ -216,7 +216,7 @@ module Formby
   # specifying the valid options
   class Dropdown < Formby::Input
     needs :options
-    def type ; :nil; end
+    def type ; nil; end
     def content
       select self.standard_attributes.merge(:value=>nil) do
         @options.each do |k,v|
